@@ -56,7 +56,9 @@ class ErrorBoundary extends Component {
               padding: 14,
             }}
           >
-            <div style={{ fontWeight: 900, color: "crimson" }}>Se cayó la UI</div>
+            <div style={{ fontWeight: 900, color: "crimson" }}>
+              Se cayó la UI
+            </div>
             <div style={{ marginTop: 8, fontSize: 13, whiteSpace: "pre-wrap" }}>
               {this.state.message}
             </div>
@@ -445,7 +447,9 @@ function supportUrl() {
     "Hola, necesito soporte con la página de Zul Landeros Tenis.",
     "¿Me pueden ayudar por favor?",
   ];
-  return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(lines.join("\n"))}`;
+  return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(
+    lines.join("\n")
+  )}`;
 }
 
 function orderUrl({ brand, model, size, link }) {
@@ -454,12 +458,17 @@ function orderUrl({ brand, model, size, link }) {
     `Talla: ${size || "—"}`,
     `Link: ${link}`,
   ];
-  return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(lines.join("\n"))}`;
+  return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(
+    lines.join("\n")
+  )}`;
 }
 
 function parseSizes(input) {
   if (typeof input !== "string") return [];
-  const tokens = input.split(",").map((t) => t.trim()).filter(Boolean);
+  const tokens = input
+    .split(",")
+    .map((t) => t.trim())
+    .filter(Boolean);
   const out = [];
   for (const tok of tokens) {
     const m = tok.match(/^(\d+)\s*-\s*(\d+)$/); // solo rangos enteros
@@ -472,7 +481,8 @@ function parseSizes(input) {
   }
   const unique = Array.from(new Set(out));
   unique.sort((x, y) => {
-    const ax = Number(x), ay = Number(y);
+    const ax = Number(x),
+      ay = Number(y);
     const xn = Number.isFinite(ax) && x !== "";
     const yn = Number.isFinite(ay) && y !== "";
     if (xn && yn) return ax - ay;
@@ -497,6 +507,35 @@ function primaryColor(color) {
   const t = norm(color).replace(/[,]+/g, " ").trim();
   if (!t) return "";
   return t.split(/\s+/)[0] || "";
+}
+
+/**
+ * Normaliza segmento para que:
+ * - "nina" => "niña"
+ * - "nino" => "niño"
+ * (evita que falte "niña" en filtros si en DB viene sin acento)
+ */
+function canonSegment(seg) {
+  const s = norm(seg);
+  if (!s) return "";
+  if (s === "nina") return "niña";
+  if (s === "nino") return "niño";
+  return s;
+}
+
+/**
+ * Matching de segmento:
+ * - Si filtras "dama" o "caballero": incluye también "unisex"
+ * - Para el resto: exacto (niño, niña, unisex, etc)
+ */
+function segmentMatchesFilter(itemSegRaw, filterSegRaw) {
+  const itemSeg = canonSegment(itemSegRaw);
+  const seg = canonSegment(filterSegRaw);
+  if (!seg) return true;
+  if (seg === "dama" || seg === "caballero") {
+    return itemSeg === seg || itemSeg === "unisex";
+  }
+  return itemSeg === seg;
 }
 
 /* =========================
@@ -533,9 +572,19 @@ function Topbar() {
       <div className="wrap">
         <div className="glass barInner">
           <div className="left">
-            <button className="btn iconBtn" onClick={() => setOpen(true)} aria-label="Abrir menú" title="Menú">
+            <button
+              className="btn iconBtn"
+              onClick={() => setOpen(true)}
+              aria-label="Abrir menú"
+              title="Menú"
+            >
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                <path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" />
+                <path
+                  d="M4 7h16M4 12h16M4 17h16"
+                  stroke="currentColor"
+                  strokeWidth="2.2"
+                  strokeLinecap="round"
+                />
               </svg>
             </button>
 
@@ -556,7 +605,12 @@ function Topbar() {
               <div style={{ fontWeight: 950 }}>Menú</div>
               <button className="btn iconBtn" onClick={() => setOpen(false)} aria-label="Cerrar menú">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                  <path d="M6 6l12 12M18 6L6 18" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" />
+                  <path
+                    d="M6 6l12 12M18 6L6 18"
+                    stroke="currentColor"
+                    strokeWidth="2.2"
+                    strokeLinecap="round"
+                  />
                 </svg>
               </button>
             </div>
@@ -565,7 +619,13 @@ function Topbar() {
               <Link className="drawerLink" to="/catalogo" onClick={() => setOpen(false)}>
                 Catálogo <span style={{ opacity: 0.55 }}>⌁</span>
               </Link>
-              <a className="drawerLink" href={supportUrl()} target="_blank" rel="noreferrer" onClick={() => setOpen(false)}>
+              <a
+                className="drawerLink"
+                href={supportUrl()}
+                target="_blank"
+                rel="noreferrer"
+                onClick={() => setOpen(false)}
+              >
                 Soporte <span style={{ opacity: 0.55 }}>💬</span>
               </a>
             </div>
@@ -582,27 +642,64 @@ function Topbar() {
                     onChange={(e) => setCatFilters((f) => ({ ...f, q: e.target.value }))}
                   />
 
-                  <select className="field" value={catFilters.brand} onChange={(e) => setCatFilters((f) => ({ ...f, brand: e.target.value }))}>
+                  <select
+                    className="field"
+                    value={catFilters.brand}
+                    onChange={(e) => setCatFilters((f) => ({ ...f, brand: e.target.value }))}
+                  >
                     <option value="">Marca</option>
-                    {catOptions.brands.map((b) => <option key={b} value={b}>{b}</option>)}
+                    {catOptions.brands.map((b) => (
+                      <option key={b} value={b}>
+                        {b}
+                      </option>
+                    ))}
                   </select>
 
-                  <select className="field" value={catFilters.segment} onChange={(e) => setCatFilters((f) => ({ ...f, segment: e.target.value }))}>
+                  <select
+                    className="field"
+                    value={catFilters.segment}
+                    onChange={(e) => setCatFilters((f) => ({ ...f, segment: e.target.value }))}
+                  >
                     <option value="">Género</option>
-                    {catOptions.segments.map((s) => <option key={s} value={s}>{s}</option>)}
+                    {/* Unisex NO se muestra aquí (se aplica internamente con segmentMatchesFilter) */}
+                    {catOptions.segments
+                      .filter((s) => s !== "unisex")
+                      .map((s) => (
+                        <option key={s} value={s}>
+                          {s}
+                        </option>
+                      ))}
                   </select>
 
-                  <select className="field" value={catFilters.color} onChange={(e) => setCatFilters((f) => ({ ...f, color: e.target.value }))}>
+                  <select
+                    className="field"
+                    value={catFilters.color}
+                    onChange={(e) => setCatFilters((f) => ({ ...f, color: e.target.value }))}
+                  >
                     <option value="">Color</option>
-                    {catOptions.colors.map((c) => <option key={c} value={c}>{c}</option>)}
+                    {catOptions.colors.map((c) => (
+                      <option key={c} value={c}>
+                        {c}
+                      </option>
+                    ))}
                   </select>
 
-                  <select className="field" value={catFilters.size} onChange={(e) => setCatFilters((f) => ({ ...f, size: e.target.value }))}>
+                  <select
+                    className="field"
+                    value={catFilters.size}
+                    onChange={(e) => setCatFilters((f) => ({ ...f, size: e.target.value }))}
+                  >
                     <option value="">Talla</option>
-                    {catOptions.sizes.map((t) => <option key={t} value={t}>{t}</option>)}
+                    {catOptions.sizes.map((t) => (
+                      <option key={t} value={t}>
+                        {t}
+                      </option>
+                    ))}
                   </select>
 
-                  <button className="btn" onClick={resetCatFilters}>Limpiar filtros</button>
+                  <button className="btn" onClick={resetCatFilters}>
+                    Limpiar filtros
+                  </button>
                 </div>
               </>
             ) : null}
@@ -668,7 +765,9 @@ function Catalogo() {
       setLoading(false);
     })();
 
-    return () => { cancel = true; };
+    return () => {
+      cancel = true;
+    };
   }, []);
 
   const options = useMemo(() => {
@@ -679,7 +778,9 @@ function Catalogo() {
 
     for (const p of items) {
       if (p.brand) brands.add(p.brand);
-      if (p.segment) segments.add(p.segment);
+
+      const seg = canonSegment(p.segment);
+      if (seg) segments.add(seg);
 
       const c1 = primaryColor(p.color);
       if (c1) colors.add(c1);
@@ -691,6 +792,7 @@ function Catalogo() {
 
     return {
       brands: Array.from(brands).sort(sortAlpha),
+      // Aquí SÍ puede venir "unisex" (pero luego lo ocultamos en el select)
       segments: Array.from(segments).sort(sortAlpha),
       colors: Array.from(colors).sort(sortAlpha), // SOLO primera palabra
       sizes: Array.from(sizes).sort((a, b) => Number(a) - Number(b)),
@@ -706,7 +808,9 @@ function Catalogo() {
 
     return items.filter((p) => {
       if (catFilters.brand && p.brand !== catFilters.brand) return false;
-      if (catFilters.segment && p.segment !== catFilters.segment) return false;
+
+      // Unisex se incluye al filtrar dama/caballero
+      if (catFilters.segment && !segmentMatchesFilter(p.segment, catFilters.segment)) return false;
 
       if (catFilters.color) {
         // SOLO primera palabra de color
@@ -834,7 +938,9 @@ function Product() {
       setLoading(false);
     })();
 
-    return () => { cancel = true; };
+    return () => {
+      cancel = true;
+    };
   }, [slugOrId]);
 
   useEffect(() => {
@@ -848,8 +954,20 @@ function Product() {
     return () => window.removeEventListener("keydown", onKey);
   }, [modalOpen]);
 
-  if (loading) return <Shell><div className="glass panel muted fadeIn">Cargando…</div></Shell>;
-  if (!p || errorMsg) return <Shell><div className="glass panel danger fadeIn">Error: {errorMsg || "No encontrado"}</div></Shell>;
+  if (loading)
+    return (
+      <Shell>
+        <div className="glass panel muted fadeIn">Cargando…</div>
+      </Shell>
+    );
+  if (!p || errorMsg)
+    return (
+      <Shell>
+        <div className="glass panel danger fadeIn">
+          Error: {errorMsg || "No encontrado"}
+        </div>
+      </Shell>
+    );
 
   const images = Array.isArray(p.images) ? p.images : [];
   const sizes = parseSizes(p.sizes);
@@ -871,7 +989,7 @@ function Product() {
             <div style={{ fontSize: 22, fontWeight: 950 }}>{p.model}</div>
             <div className="muted">{p.brand}</div>
           </div>
-          {p.segment ? <div className="chip">{p.segment}</div> : null}
+          {p.segment ? <div className="chip">{canonSegment(p.segment)}</div> : null}
         </div>
 
         <div className="hr" />
@@ -910,12 +1028,22 @@ function Product() {
         <div style={{ fontWeight: 950, marginBottom: 8 }}>Selecciona tu talla</div>
         <select className="field" value={size} onChange={(e) => setSize(e.target.value)}>
           <option value="">Selecciona una talla</option>
-          {sizes.map((s) => <option key={s} value={s}>{s}</option>)}
+          {sizes.map((s) => (
+            <option key={s} value={s}>
+              {s}
+            </option>
+          ))}
         </select>
 
         <div className="hr" />
 
-        <a className="btn btnP" href={wa} target="_blank" rel="noreferrer" style={{ justifyContent: "center", width: "100%" }}>
+        <a
+          className="btn btnP"
+          href={wa}
+          target="_blank"
+          rel="noreferrer"
+          style={{ justifyContent: "center", width: "100%" }}
+        >
           Pedir por WhatsApp
         </a>
       </div>
@@ -924,11 +1052,19 @@ function Product() {
         <div className="modalOverlay" onClick={() => setModalOpen(false)}>
           <div className="modal" onClick={(e) => e.stopPropagation()}>
             <div className="modalTop">
-              <div className="chip">{p.brand} · {p.model}</div>
+              <div className="chip">
+                {p.brand} · {p.model}
+              </div>
               <div className="row">
-                <button className="btn" onClick={() => setActiveIndex((x) => x - 1)}>←</button>
-                <button className="btn" onClick={() => setActiveIndex((x) => x + 1)}>→</button>
-                <button className="btn btnP" onClick={() => setModalOpen(false)}>Cerrar</button>
+                <button className="btn" onClick={() => setActiveIndex((x) => x - 1)}>
+                  ←
+                </button>
+                <button className="btn" onClick={() => setActiveIndex((x) => x + 1)}>
+                  →
+                </button>
+                <button className="btn btnP" onClick={() => setModalOpen(false)}>
+                  Cerrar
+                </button>
               </div>
             </div>
             <img className="modalImg" src={images[safeIndex]} alt="Zoom" />
@@ -943,7 +1079,12 @@ function Product() {
    Admin
 ========================= */
 function AdminGate({ children }) {
-  const [state, setState] = useState({ loading: true, session: null, isAdmin: false, error: "" });
+  const [state, setState] = useState({
+    loading: true,
+    session: null,
+    isAdmin: false,
+    error: "",
+  });
 
   useEffect(() => {
     let cancel = false;
@@ -966,13 +1107,30 @@ function AdminGate({ children }) {
       else setState({ loading: false, session, isAdmin: !!data, error: "" });
     })();
 
-    return () => { cancel = true; };
+    return () => {
+      cancel = true;
+    };
   }, []);
 
-  if (state.loading) return <Shell><div className="glass panel muted fadeIn">Cargando sesión…</div></Shell>;
+  if (state.loading)
+    return (
+      <Shell>
+        <div className="glass panel muted fadeIn">Cargando sesión…</div>
+      </Shell>
+    );
   if (!state.session) return <Navigate to="/admin/login" replace />;
-  if (state.error) return <Shell><div className="glass panel danger fadeIn">Error: {state.error}</div></Shell>;
-  if (!state.isAdmin) return <Shell><div className="glass panel danger fadeIn">No tienes permiso.</div></Shell>;
+  if (state.error)
+    return (
+      <Shell>
+        <div className="glass panel danger fadeIn">Error: {state.error}</div>
+      </Shell>
+    );
+  if (!state.isAdmin)
+    return (
+      <Shell>
+        <div className="glass panel danger fadeIn">No tienes permiso.</div>
+      </Shell>
+    );
 
   return children(state.session);
 }
@@ -1000,9 +1158,27 @@ function AdminLogin() {
         <div style={{ fontSize: 20, fontWeight: 950 }}>Admin — Login</div>
         <div className="hr" />
         <form onSubmit={onSubmit} style={{ display: "grid", gap: 10 }}>
-          <input className="field" type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} required />
-          <input className="field" type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} required />
-          {err ? <div className="danger" style={{ fontSize: 13 }}>{err}</div> : null}
+          <input
+            className="field"
+            type="email"
+            placeholder="Email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+          />
+          <input
+            className="field"
+            type="password"
+            placeholder="Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+          />
+          {err ? (
+            <div className="danger" style={{ fontSize: 13 }}>
+              {err}
+            </div>
+          ) : null}
           <button className="btn btnP" type="submit" disabled={loading} style={{ justifyContent: "center" }}>
             {loading ? "Entrando…" : "Entrar"}
           </button>
@@ -1028,15 +1204,18 @@ function AdminHome({ session }) {
   const [acolor, setAColor] = useState("");
   const [asize, setASize] = useState("");
 
-  const emptyForm = useMemo(() => ({
-    brand: "",
-    model: "",
-    segment: "dama",
-    color: "",
-    sizes: "",
-    imagesText: "",
-    active: true,
-  }), []);
+  const emptyForm = useMemo(
+    () => ({
+      brand: "",
+      model: "",
+      segment: "unisex",
+      color: "",
+      sizes: "",
+      imagesText: "",
+      active: true,
+    }),
+    []
+  );
 
   const [form, setForm] = useState(emptyForm);
 
@@ -1055,7 +1234,9 @@ function AdminHome({ session }) {
       if (cancel) return;
       await load();
     })();
-    return () => { cancel = true; };
+    return () => {
+      cancel = true;
+    };
   }, [load]);
 
   const adminOptions = useMemo(() => {
@@ -1065,9 +1246,12 @@ function AdminHome({ session }) {
     const sizes = new Set();
     for (const p of items) {
       if (p.brand) brands.add(p.brand);
-      if (p.segment) segs.add(p.segment);
+      const seg = canonSegment(p.segment);
+      if (seg) segs.add(seg);
+
       const c1 = primaryColor(p.color);
       if (c1) colors.add(c1);
+
       for (const s of parseSizes(p.sizes)) sizes.add(s);
     }
     const sortAlpha = (a, b) => a.localeCompare(b, "es", { sensitivity: "base" });
@@ -1083,7 +1267,9 @@ function AdminHome({ session }) {
     const q = norm(aq);
     return items.filter((p) => {
       if (abrand && p.brand !== abrand) return false;
-      if (aseg && p.segment !== aseg) return false;
+
+      // En admin también: filtrar dama/caballero incluye unisex
+      if (aseg && !segmentMatchesFilter(p.segment, aseg)) return false;
 
       if (acolor) {
         if (primaryColor(p.color) !== acolor) return false;
@@ -1119,7 +1305,7 @@ function AdminHome({ session }) {
     setForm({
       brand: item.brand || "",
       model: item.model || "",
-      segment: item.segment || "dama",
+      segment: canonSegment(item.segment) || "unisex",
       color: item.color || "",
       sizes: item.sizes || "",
       imagesText: Array.isArray(item.images) ? item.images.join("\n") : "",
@@ -1157,7 +1343,7 @@ function AdminHome({ session }) {
     const payload = {
       brand: form.brand.trim(),
       model: form.model.trim(),
-      segment: form.segment,
+      segment: canonSegment(form.segment), // guardamos normalizado
       color: form.color.trim(), // se guarda completo; filtros usan solo primera palabra
       sizes: form.sizes.trim(),
       images,
@@ -1196,9 +1382,13 @@ function AdminHome({ session }) {
         <div className="row" style={{ justifyContent: "space-between" }}>
           <div>
             <div style={{ fontWeight: 950, fontSize: 18 }}>Admin</div>
-            <div className="muted" style={{ fontSize: 12 }}>{session.user.email}</div>
+            <div className="muted" style={{ fontSize: 12 }}>
+              {session.user.email}
+            </div>
           </div>
-          <button className="btn" onClick={logout}>Cerrar sesión</button>
+          <button className="btn" onClick={logout}>
+            Cerrar sesión
+          </button>
         </div>
       </div>
 
@@ -1207,38 +1397,90 @@ function AdminHome({ session }) {
       <div className="glass panel fadeIn" style={{ maxWidth: 920 }}>
         <div className="row" style={{ justifyContent: "space-between" }}>
           <div style={{ fontWeight: 950 }}>{editing ? "Editar producto" : "Nuevo producto"}</div>
-          {editing ? <button className="btn" onClick={startNew}>Nuevo</button> : null}
+          {editing ? (
+            <button className="btn" onClick={startNew}>
+              Nuevo
+            </button>
+          ) : null}
         </div>
 
         <div className="hr" />
 
         <form onSubmit={save} style={{ display: "grid", gap: 10 }}>
           <div className="row">
-            <input className="field" style={{ flex: 1 }} placeholder="Marca" value={form.brand} onChange={(e) => setField("brand", e.target.value)} required />
-            <input className="field" style={{ flex: 2 }} placeholder="Modelo" value={form.model} onChange={(e) => setField("model", e.target.value)} required />
+            <input
+              className="field"
+              style={{ flex: 1 }}
+              placeholder="Marca"
+              value={form.brand}
+              onChange={(e) => setField("brand", e.target.value)}
+              required
+            />
+            <input
+              className="field"
+              style={{ flex: 2 }}
+              placeholder="Modelo"
+              value={form.model}
+              onChange={(e) => setField("model", e.target.value)}
+              required
+            />
           </div>
 
           <div className="row">
-            <select className="field" style={{ flex: 1 }} value={form.segment} onChange={(e) => setField("segment", e.target.value)}>
+            <select
+              className="field"
+              style={{ flex: 1 }}
+              value={form.segment}
+              onChange={(e) => setField("segment", e.target.value)}
+            >
+              <option value="unisex">Unisex</option>
               <option value="dama">Dama</option>
               <option value="caballero">Caballero</option>
               <option value="niño">Niño</option>
               <option value="niña">Niña</option>
             </select>
-            <input className="field" style={{ flex: 1 }} placeholder="Color (ej: blanco negro / blanco, negro)" value={form.color} onChange={(e) => setField("color", e.target.value)} />
+
+            <input
+              className="field"
+              style={{ flex: 1 }}
+              placeholder="Color (ej: blanco negro / blanco, negro)"
+              value={form.color}
+              onChange={(e) => setField("color", e.target.value)}
+            />
           </div>
 
-          <input className="field" placeholder='Tallas (ej: "12-22, 24, 26.5, 28-30")' value={form.sizes} onChange={(e) => setField("sizes", e.target.value)} />
+          <input
+            className="field"
+            placeholder='Tallas (ej: "12-22, 24, 26.5, 28-30")'
+            value={form.sizes}
+            onChange={(e) => setField("sizes", e.target.value)}
+          />
 
           <div className="row" style={{ justifyContent: "space-between" }}>
-            <div className="muted" style={{ fontSize: 12 }}>Fotos</div>
-            <label className="btn" style={{ cursor: uploading ? "not-allowed" : "pointer", opacity: uploading ? 0.7 : 1 }}>
+            <div className="muted" style={{ fontSize: 12 }}>
+              Fotos
+            </div>
+            <label
+              className="btn"
+              style={{ cursor: uploading ? "not-allowed" : "pointer", opacity: uploading ? 0.7 : 1 }}
+            >
               {uploading ? "Subiendo..." : "Subir fotos"}
-              <input type="file" accept="image/*" multiple onChange={onPickFiles} disabled={uploading} style={{ display: "none" }} />
+              <input
+                type="file"
+                accept="image/*"
+                multiple
+                onChange={onPickFiles}
+                disabled={uploading}
+                style={{ display: "none" }}
+              />
             </label>
           </div>
 
-          {uploadErr ? <div className="danger" style={{ fontSize: 13 }}>{uploadErr}</div> : null}
+          {uploadErr ? (
+            <div className="danger" style={{ fontSize: 13 }}>
+              {uploadErr}
+            </div>
+          ) : null}
 
           {previewUrls.length ? (
             <div className="thumbs">
@@ -1250,10 +1492,20 @@ function AdminHome({ session }) {
             </div>
           ) : null}
 
-          <textarea className="field" rows={4} placeholder="(auto) URLs generadas" value={form.imagesText} onChange={(e) => setField("imagesText", e.target.value)} />
+          <textarea
+            className="field"
+            rows={4}
+            placeholder="(auto) URLs generadas"
+            value={form.imagesText}
+            onChange={(e) => setField("imagesText", e.target.value)}
+          />
 
           <label className="row" style={{ gap: 8 }}>
-            <input type="checkbox" checked={!!form.active} onChange={(e) => setField("active", e.target.checked)} />
+            <input
+              type="checkbox"
+              checked={!!form.active}
+              onChange={(e) => setField("active", e.target.checked)}
+            />
             <span className="muted">Activo</span>
           </label>
 
@@ -1268,30 +1520,63 @@ function AdminHome({ session }) {
       <div className="glass panel fadeIn">
         <div className="row" style={{ justifyContent: "space-between", alignItems: "baseline" }}>
           <div style={{ fontWeight: 950 }}>Buscar / filtrar (Admin)</div>
-          <div className="muted" style={{ fontSize: 12 }}>{filteredAdmin.length} / {items.length}</div>
+          <div className="muted" style={{ fontSize: 12 }}>
+            {filteredAdmin.length} / {items.length}
+          </div>
         </div>
 
         <div className="hr" />
 
         <div className="row" style={{ alignItems: "stretch" }}>
-          <input className="field" style={{ flex: 1, minWidth: 220 }} placeholder="Buscar…" value={aq} onChange={(e) => setAq(e.target.value)} />
+          <input
+            className="field"
+            style={{ flex: 1, minWidth: 220 }}
+            placeholder="Buscar…"
+            value={aq}
+            onChange={(e) => setAq(e.target.value)}
+          />
           <select className="field" style={{ width: 160 }} value={abrand} onChange={(e) => setABrand(e.target.value)}>
             <option value="">Marca</option>
-            {adminOptions.brands.map((b) => <option key={b} value={b}>{b}</option>)}
+            {adminOptions.brands.map((b) => (
+              <option key={b} value={b}>
+                {b}
+              </option>
+            ))}
           </select>
           <select className="field" style={{ width: 160 }} value={aseg} onChange={(e) => setASeg(e.target.value)}>
             <option value="">Género</option>
-            {adminOptions.segs.map((s) => <option key={s} value={s}>{s}</option>)}
+            {adminOptions.segs.map((s) => (
+              <option key={s} value={s}>
+                {s}
+              </option>
+            ))}
           </select>
           <select className="field" style={{ width: 160 }} value={acolor} onChange={(e) => setAColor(e.target.value)}>
             <option value="">Color</option>
-            {adminOptions.colors.map((c) => <option key={c} value={c}>{c}</option>)}
+            {adminOptions.colors.map((c) => (
+              <option key={c} value={c}>
+                {c}
+              </option>
+            ))}
           </select>
           <select className="field" style={{ width: 120 }} value={asize} onChange={(e) => setASize(e.target.value)}>
             <option value="">Talla</option>
-            {adminOptions.sizes.map((t) => <option key={t} value={t}>{t}</option>)}
+            {adminOptions.sizes.map((t) => (
+              <option key={t} value={t}>
+                {t}
+              </option>
+            ))}
           </select>
-          <button className="btn" onClick={() => { setAq(""); setABrand(""); setASeg(""); setAColor(""); setASize(""); }}>
+          <button
+            className="btn"
+            onClick={() => {
+              setAq("");
+              setABrand("");
+              setASeg("");
+              setAColor("");
+              setASize("");
+            }}
+          >
             Limpiar
           </button>
         </div>
@@ -1312,11 +1597,9 @@ function AdminHome({ session }) {
                     {it.model} <span className="muted">— {it.brand}</span>
                   </div>
                   <div className="adminSubLine">
-                    {it.segment || "—"} · {primaryColor(it.color) || "—"} · {it.active ? "activo" : "inactivo"}
+                    {canonSegment(it.segment) || "—"} · {primaryColor(it.color) || "—"} · {it.active ? "activo" : "inactivo"}
                   </div>
-                  <div className="adminSubLine">
-                    Tallas: {it.sizes || "—"}
-                  </div>
+                  <div className="adminSubLine">Tallas: {it.sizes || "—"}</div>
                 </div>
 
                 <div className="row adminActions" style={{ justifyContent: "flex-end" }}>
