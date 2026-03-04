@@ -120,31 +120,17 @@ function css() {
   .wrap{ max-width:1120px; margin:0 auto; padding:16px; }
 
   .glass{
-    background:var(--card);
-    border:1px solid var(--stroke);
+    background:rgba(255,255,255,.92);
+    border:1px solid rgba(0,0,0,.06);
     border-radius:var(--radius);
-    backdrop-filter: blur(12px);
-    box-shadow: var(--shadow);
+    box-shadow: 0 4px 24px rgba(20,20,35,.08);
   }
 
   .bar{ position:sticky; top:0; z-index:30; padding:12px 0; }
   .barInner{
     display:flex; align-items:center; justify-content:space-between; gap:10px;
-    padding:10px 12px;
-    position:relative;
-    overflow:hidden;
+    padding:10px 14px;
   }
-  .barInner::before{
-    content:"";
-    position:absolute; inset:-2px;
-    background:
-      radial-gradient(900px 320px at 10% 0%, rgba(255,140,200,.40), transparent 55%),
-      radial-gradient(900px 320px at 95% 10%, rgba(219,231,255,.92), transparent 55%),
-      linear-gradient(135deg, rgba(255,255,255,.35), rgba(255,255,255,0));
-    opacity:.75;
-    pointer-events:none;
-  }
-  .barInner > *{ position:relative; z-index:1; }
 
   .left{ display:flex; align-items:center; gap:10px; }
   .brand{ font-weight:950; letter-spacing:.2px; }
@@ -164,7 +150,7 @@ function css() {
     background: var(--btnGrad);
     border:1px solid rgba(255,255,255,.85);
     box-shadow: 0 14px 34px rgba(20,20,35,.10);
-    transition: transform .16s ease, box-shadow .16s ease, filter .16s ease;
+    transition: transform .18s cubic-bezier(.34,1.56,.64,1), box-shadow .18s ease, filter .18s ease, background .15s ease;
   }
   .btn:hover{ transform: translateY(-2px); box-shadow: 0 18px 44px rgba(20,20,35,.14); filter: saturate(1.05); }
   .btn:active{ transform: translateY(0px) scale(.99); }
@@ -184,53 +170,51 @@ function css() {
   .hr{ height:12px; }
   .danger{ color:crimson; font-weight:900; }
 
-  .fadeIn{ animation: fadeIn .22s ease-out both; }
+  .fadeIn{ animation: fadeIn .35s cubic-bezier(.25,.46,.45,.94) both; }
   @keyframes fadeIn{
-    from{ opacity:0; transform: translateY(10px); }
-    to{ opacity:1; transform: translateY(0px); }
+    from{ opacity:0; transform: translateY(14px); }
+    to{ opacity:1; transform: translateY(0); }
   }
 
   .grid{
     display:grid;
-    grid-template-columns: repeat(auto-fill, minmax(185px, 1fr));
-    gap:14px;
+    grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+    gap:18px;
   }
   .card{
     text-decoration:none;
-    background:rgba(255,255,255,.92);
-    border:1px solid rgba(255,255,255,.85);
+    background:rgba(255,255,255,.94);
+    border:1px solid rgba(0,0,0,.06);
     border-radius:22px;
     overflow:hidden;
-    box-shadow: var(--shadow2);
-    transition: transform .18s ease, box-shadow .18s ease;
+    box-shadow: 0 4px 20px rgba(20,20,35,.08);
+    transition: transform .2s ease, box-shadow .2s ease;
     position:relative;
+    will-change:transform;
   }
-  .card::before{
-    content:"";
-    position:absolute; inset:0;
-    background:
-      radial-gradient(520px 300px at 10% 0%, rgba(255,140,200,.25), transparent 55%),
-      radial-gradient(520px 300px at 95% 0%, rgba(219,231,255,.88), transparent 55%);
-    opacity:.55;
-    pointer-events:none;
-  }
-  .card > *{ position:relative; z-index:1; }
-  .card:hover{ transform: translateY(-4px); box-shadow: 0 20px 54px rgba(20,20,35,.16); }
+  .card:hover{ transform:translate3d(0,-4px,0); box-shadow: 0 12px 36px rgba(20,20,35,.14); }
 
-  .imgBox{ aspect-ratio:1/1; background:#f6f6fb; overflow:hidden; }
+  .imgBox{ aspect-ratio:4/5; background:#f4f4f9; overflow:hidden; }
   .img{
     width:100%;
     height:100%;
     object-fit:cover;
     display:block;
-    transform: scale(1.02);
-    transition: transform .38s ease;
+    transform: translate3d(0,0,0) scale(1.02);
+    transition: transform .3s ease;
   }
-  .card:hover .img{ transform: scale(1.07); }
+  .card:hover .img{ transform: translate3d(0,0,0) scale(1.06); }
 
-  .meta{ padding:10px 12px 12px; }
-  .title{ font-weight:950; font-size:13px; }
-  .sub{ font-size:12px; color:var(--muted); font-weight:850; margin-top:2px; }
+  .meta{ padding:12px 14px 14px; }
+  .title{ font-weight:900; font-size:14px; line-height:1.3; letter-spacing:-0.2px; }
+  .sub{ font-size:11.5px; color:var(--muted); font-weight:700; margin-top:3px; text-transform:uppercase; letter-spacing:0.4px; }
+
+  .sizes-row{ display:flex; flex-wrap:wrap; gap:3px; margin-top:5px; }
+  .size-chip{
+    font-size:10px; font-weight:700; line-height:1;
+    padding:2px 5px; border-radius:6px;
+    background:rgba(0,0,0,.06); color:var(--fg);
+  }
 
   .field{
     width:100%;
@@ -249,8 +233,7 @@ function css() {
 
   .overlay{
     position:fixed; inset:0;
-    background: rgba(10,10,16,.46);
-    backdrop-filter: blur(8px);
+    background: rgba(10,10,16,.55);
     z-index:60;
     animation: fadeOverlay .16s ease-out both;
   }
@@ -312,8 +295,7 @@ function css() {
   /* modal */
   .modalOverlay{
     position:fixed; inset:0;
-    background: rgba(10,10,16,.60);
-    backdrop-filter: blur(10px);
+    background: rgba(10,10,16,.70);
     z-index:90;
     display:grid;
     place-items:center;
@@ -326,10 +308,7 @@ function css() {
     overflow:hidden;
     border:1px solid rgba(255,255,255,.22);
     box-shadow: 0 26px 78px rgba(0,0,0,.40);
-    background:
-      radial-gradient(900px 420px at 20% 0%, rgba(255,140,200,.25), transparent 55%),
-      radial-gradient(900px 420px at 90% 0%, rgba(219,231,255,.55), transparent 55%),
-      rgba(255,255,255,.08);
+    background: rgba(20,20,28,.92);
     animation: popIn .18s ease-out both;
   }
   .modalTop{
@@ -353,48 +332,91 @@ function css() {
     border:1px solid rgba(255,255,255,.86);
   }
 
-  /* splash (abre hacia afuera) */
+  /* splash — solo transform + opacity para 60fps */
   .splash{
     position:fixed; inset:0;
     z-index:120;
     display:grid;
     place-items:center;
     pointer-events:none;
+    overflow:hidden;
   }
   .splashBase{
     position:absolute; inset:0;
-    background:
-      radial-gradient(1200px 800px at 25% 0%, rgba(255,140,200,.85), transparent 60%),
-      radial-gradient(1000px 700px at 92% 10%, rgba(219,231,255,.95), transparent 58%),
-      linear-gradient(135deg, rgba(255,77,166,.95), rgba(255,140,200,.85));
+    background: linear-gradient(135deg, #ff4da6, #ff8cc8 50%, #e8d5ff);
   }
+
   .curtain{
-    position:absolute; top:0; bottom:0; width:50%;
-    background:
-      radial-gradient(900px 600px at 30% 20%, rgba(255,255,255,.20), transparent 55%),
-      linear-gradient(135deg, rgba(255,77,166,.95), rgba(255,140,200,.85));
-    border: 1px solid rgba(255,255,255,.18);
+    position:absolute; top:0; bottom:0; width:51%;
+    will-change:transform;
+    background: linear-gradient(135deg, #ff4da6, #ff8cc8);
   }
-  .curtain.left{ left:0; animation: openLeft .78s cubic-bezier(.2,.9,.2,1) .62s forwards; }
-  .curtain.right{ right:0; animation: openRight .78s cubic-bezier(.2,.9,.2,1) .62s forwards; }
-  @keyframes openLeft{ to{ transform: translateX(-102%); opacity:.98; } }
-  @keyframes openRight{ to{ transform: translateX(102%); opacity:.98; } }
+  .curtain.left{
+    left:0;
+    transform:translateX(0);
+    animation: openL .7s cubic-bezier(.4,0,.2,1) .7s forwards;
+  }
+  .curtain.right{
+    right:0;
+    transform:translateX(0);
+    animation: openR .7s cubic-bezier(.4,0,.2,1) .7s forwards;
+  }
+  @keyframes openL{ to{ transform:translate3d(-102%,0,0); } }
+  @keyframes openR{ to{ transform:translate3d(102%,0,0); } }
+
+  .splashContent{
+    position:relative;
+    display:flex; flex-direction:column; align-items:center;
+  }
 
   .splashText{
-    position:relative;
     font-weight: 950;
-    letter-spacing: -0.6px;
-    font-size: clamp(34px, 6vw, 74px);
-    color: rgba(255,255,255,.98);
-    text-shadow: 0 18px 55px rgba(0,0,0,.35);
-    animation: textIn .42s ease-out .10s both, textOut .40s ease-in .62s both;
+    letter-spacing: -0.5px;
+    font-size: clamp(32px, 6vw, 68px);
+    color: #fff;
+    will-change:transform,opacity;
+    animation: txtIn .5s cubic-bezier(.16,1,.3,1) .05s both,
+               txtOut .35s ease-in .68s both;
     text-align:center;
     padding: 0 14px;
   }
-  @keyframes textIn{ from{ opacity:0; transform: translateY(8px) scale(.98);} to{ opacity:1; transform: translateY(0) scale(1);} }
-  @keyframes textOut{ to{ opacity:0; transform: translateY(-6px) scale(.98);} }
-  .splashHide{ animation: splashHide .22s ease-out 1.40s forwards; }
-  @keyframes splashHide{ to{ opacity:0; visibility:hidden; } }
+  @keyframes txtIn{
+    from{ opacity:0; transform:translate3d(0,16px,0) scale(.95); }
+    to{ opacity:1; transform:translate3d(0,0,0) scale(1); }
+  }
+  @keyframes txtOut{
+    to{ opacity:0; transform:translate3d(0,-10px,0) scale(.97); }
+  }
+
+  .splashLine{
+    width:min(180px, 40vw); height:2px; border-radius:2px;
+    background: rgba(255,255,255,.5);
+    margin-top:10px;
+    will-change:transform,opacity;
+    transform:scaleX(0);
+    animation: lineIn .4s cubic-bezier(.16,1,.3,1) .2s both,
+               lineOut .25s ease-in .68s both;
+  }
+  @keyframes lineIn{ to{ transform:scaleX(1); opacity:1; } }
+  @keyframes lineOut{ to{ transform:scaleX(0); opacity:0; } }
+
+  .splashSub{
+    font-size: clamp(10px, 1.8vw, 14px);
+    font-weight:700;
+    color: rgba(255,255,255,.6);
+    letter-spacing:3px;
+    text-transform:uppercase;
+    margin-top:8px;
+    will-change:transform,opacity;
+    animation: txtIn .4s cubic-bezier(.16,1,.3,1) .18s both,
+               txtOut .3s ease-in .68s both;
+  }
+
+  .splashHide{
+    will-change:opacity;
+    animation: splashOut .25s ease-out 1.45s forwards;
+  }
+  @keyframes splashOut{ to{ opacity:0; visibility:hidden; } }
 
   /* admin list w/ thumb */
   .adminRow{
@@ -431,10 +453,151 @@ function css() {
     text-overflow: ellipsis;
   }
 
+  /* Color dot badge */
+  .color-dot{
+    width:10px; height:10px; border-radius:50%;
+    display:inline-block; vertical-align:middle;
+    border:1.5px solid rgba(0,0,0,.12);
+    flex-shrink:0;
+  }
+
+  /* Segment badge */
+  .seg-badge{
+    font-size:9.5px; font-weight:800; text-transform:uppercase;
+    letter-spacing:0.5px; padding:2px 7px; border-radius:8px;
+    background:rgba(255,77,166,.10); color:var(--pink);
+    line-height:1;
+  }
+
+  /* Active filter chips bar */
+  .filter-bar{ display:flex; flex-wrap:wrap; gap:6px; align-items:center; }
+  .filter-chip{
+    font-size:11px; font-weight:800; padding:4px 10px; border-radius:999px;
+    background:rgba(255,77,166,.12); color:var(--pink);
+    border:1px solid rgba(255,77,166,.18);
+    display:inline-flex; align-items:center; gap:4px; cursor:pointer;
+    transition: background .15s ease;
+  }
+  .filter-chip:hover{ background:rgba(255,77,166,.20); }
+  .filter-chip .x{ font-size:13px; opacity:.7; }
+
+  /* Skeleton loader */
+  .skeleton{
+    background: linear-gradient(90deg, #f0f0f5 25%, #e8e8f0 50%, #f0f0f5 75%);
+    background-size:200% 100%;
+    animation: shimmer 1.5s ease-in-out infinite;
+    border-radius:var(--radius);
+  }
+  .skeleton-card{ border-radius:22px; overflow:hidden; }
+  .skeleton-img{ aspect-ratio:4/5; background:#ededf2; }
+  .skeleton-text{ height:14px; border-radius:7px; margin:10px 14px; width:70%; }
+  .skeleton-text.short{ width:45%; height:12px; margin-top:6px; }
+  @keyframes shimmer{ 0%{background-position:200% 0;} 100%{background-position:-200% 0;} }
+
+  /* Back to top */
+  .back-to-top{
+    position:fixed; bottom:24px; right:24px; z-index:50;
+    width:48px; height:48px; border-radius:50%;
+    background:var(--btnGrad2); color:#fff; border:0;
+    box-shadow:0 8px 24px rgba(255,77,166,.30);
+    cursor:pointer; display:grid; place-items:center;
+    transition: opacity .2s ease, transform .2s ease;
+    opacity:0; pointer-events:none; transform:translateY(8px);
+  }
+  .back-to-top.visible{ opacity:1; pointer-events:auto; transform:translateY(0); }
+
+  /* Share button */
+  .share-btn{
+    font-size:12px; font-weight:800; padding:8px 14px; border-radius:14px;
+    background:rgba(0,0,0,.05); border:1px solid rgba(0,0,0,.08);
+    cursor:pointer; transition: background .15s ease;
+    display:inline-flex; align-items:center; gap:6px;
+  }
+  .share-btn:hover{ background:rgba(0,0,0,.10); }
+
+  /* Lazy image */
+  .img-lazy{
+    width:100%; height:100%; object-fit:cover; display:block;
+    transform:translate3d(0,0,0) scale(1.02);
+    transition: transform .3s ease, opacity .3s ease;
+    opacity:1;
+  }
+  .img-lazy.loading{ opacity:.4; transform:translate3d(0,0,0) scale(1.04); }
+  .card:hover .img-lazy{ transform:translate3d(0,0,0) scale(1.06); }
+
+  /* Lightbox nav arrows */
+  .nav-arrow{
+    position:absolute; top:50%; transform:translateY(-50%);
+    width:44px; height:44px; border-radius:50%;
+    background:rgba(255,255,255,.90); border:1px solid rgba(0,0,0,.08);
+    cursor:pointer; display:grid; place-items:center;
+    box-shadow:0 4px 16px rgba(0,0,0,.15);
+    transition: background .15s ease, transform .15s ease;
+    z-index:5;
+  }
+  .nav-arrow:hover{ background:rgba(255,255,255,.95); transform:translateY(-50%) scale(1.05); }
+  .nav-arrow.left{ left:12px; }
+  .nav-arrow.right{ right:12px; }
+
+  /* Card entrance */
+  .card{ animation: cardIn .25s ease-out both; }
+  @keyframes cardIn{
+    from{ opacity:0; transform:translate3d(0,10px,0); }
+    to{ opacity:1; transform:translate3d(0,0,0); }
+  }
+
+  /* Toast */
+  .toast{
+    position:fixed; bottom:24px; left:50%; transform:translateX(-50%);
+    background:var(--text); color:#fff; padding:10px 20px; border-radius:999px;
+    font-size:13px; font-weight:800; z-index:100;
+    box-shadow:0 8px 24px rgba(0,0,0,.25);
+    animation: fadeIn .2s ease-out both;
+  }
+
+  /* Size button in product detail */
+  .size-btn{
+    padding:8px 14px; font-size:13px; border-radius:12px;
+    font-weight:800; cursor:pointer; border:1px solid rgba(255,255,255,.85);
+    background:var(--btnGrad); transition: all .15s ease;
+  }
+  .size-btn:hover{ transform:translateY(-1px); }
+  .size-btn.active{
+    background:var(--btnGrad2); color:#fff; border:0;
+    box-shadow:0 8px 20px rgba(255,77,166,.25);
+  }
+
+  /* Admin section labels */
+  .admin-label{
+    font-size:11px; font-weight:800; color:var(--muted);
+    text-transform:uppercase; letter-spacing:0.5px; margin-top:6px;
+  }
+
+  @media (max-width: 1024px){
+    .grid{ grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); }
+    .wrap{ padding:12px; }
+    .modal{ width:min(90vw, 780px); }
+  }
+
   @media (max-width: 640px){
     .grid{ grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); }
     .adminRow{ grid-template-columns: 52px 1fr; }
     .adminRow .adminActions{ grid-column: 1 / -1; justify-content:flex-end; }
+    .barInner{ padding:8px 10px; }
+    .brand{ font-size:14px; }
+    .meta{ padding:8px 10px 10px; }
+    .title{ font-size:12px; }
+    .sub{ font-size:11px; }
+    .thumbs{ gap:6px; }
+    .thumb{ width:52px; height:52px; border-radius:14px; }
+    .back-to-top{ bottom:16px; right:16px; width:42px; height:42px; }
+    .nav-arrow{ width:36px; height:36px; }
+  }
+
+  @media (max-width: 380px){
+    .grid{ grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap:10px; }
+    .wrap{ padding:8px; }
+    .btn{ padding:8px 10px; font-size:12px; border-radius:14px; }
   }
   `;
 }
@@ -471,13 +634,18 @@ function parseSizes(input) {
     .filter(Boolean);
   const out = [];
   for (const tok of tokens) {
-    const m = tok.match(/^(\d+)\s*-\s*(\d+)$/); // solo rangos enteros
+    const m = tok.match(/^(\d+(?:\.\d+)?)\s*-\s*(\d+(?:\.\d+)?)$/);
     if (m) {
       const a = Number(m[1]);
       const b = Number(m[2]);
-      const step = a <= b ? 1 : -1;
-      for (let v = a; step === 1 ? v <= b : v >= b; v += step) out.push(String(v));
-    } else out.push(tok); // decimales se quedan tal cual (ej 26.5)
+      const hasHalf = m[1].includes(".") || m[2].includes(".");
+      const step = hasHalf ? 0.5 : 1;
+      const dir = a <= b ? 1 : -1;
+      for (let v = a; dir === 1 ? v <= b : v >= b; v += step * dir) {
+        const rounded = Math.round(v * 10) / 10;
+        out.push(Number.isInteger(rounded) ? String(rounded) : rounded.toFixed(1));
+      }
+    } else out.push(tok);
   }
   const unique = Array.from(new Set(out));
   unique.sort((x, y) => {
@@ -507,6 +675,17 @@ function primaryColor(color) {
   const t = norm(color).replace(/[,]+/g, " ").trim();
   if (!t) return "";
   return t.split(/\s+/)[0] || "";
+}
+
+const COLOR_MAP = {
+  blanco: "#ffffff", negro: "#1a1a1a", rojo: "#e53e3e", azul: "#3182ce",
+  rosa: "#ed64a6", verde: "#38a169", gris: "#a0aec0", amarillo: "#ecc94b",
+  naranja: "#ed8936", morado: "#805ad5", cafe: "#8b6f47", beige: "#f5e6d3",
+  dorado: "#d4a017", plateado: "#c0c0c0", celeste: "#63b3ed", coral: "#fc8181",
+  turquesa: "#38b2ac", lila: "#b794f6", vino: "#742a2a", crema: "#fefcbf",
+};
+function colorToHex(name) {
+  return COLOR_MAP[name] || "#d4d4d4";
 }
 
 /**
@@ -543,7 +722,7 @@ function segmentMatchesFilter(itemSegRaw, filterSegRaw) {
 ========================= */
 function SplashIntro({ onDone }) {
   useEffect(() => {
-    const t = setTimeout(() => onDone(), 1550);
+    const t = setTimeout(() => onDone(), 1700);
     return () => clearTimeout(t);
   }, [onDone]);
 
@@ -552,8 +731,55 @@ function SplashIntro({ onDone }) {
       <div className="splashBase" />
       <div className="curtain left" />
       <div className="curtain right" />
-      <div className="splashText">Zul Landeros Tenis</div>
+      <div className="splashContent">
+        <div className="splashText">Zul Landeros Tenis</div>
+        <div className="splashLine" />
+        <div className="splashSub">Catálogo</div>
+      </div>
     </div>
+  );
+}
+
+/* =========================
+   LazyImage + BackToTop
+========================= */
+function LazyImage({ src, alt }) {
+  const [loaded, setLoaded] = useState(false);
+  const imgRef = useCallback((node) => {
+    if (!node) return;
+    if (node.complete) { setLoaded(true); return; }
+    node.onload = () => setLoaded(true);
+  }, []);
+  return (
+    <img
+      ref={imgRef}
+      src={src}
+      alt={alt}
+      loading="lazy"
+      width="400"
+      height="500"
+      className={`img-lazy ${loaded ? "" : "loading"}`}
+    />
+  );
+}
+
+function BackToTop() {
+  const [visible, setVisible] = useState(false);
+  useEffect(() => {
+    function onScroll() { setVisible(window.scrollY > 400); }
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+  return (
+    <button
+      className={`back-to-top ${visible ? "visible" : ""}`}
+      onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+      aria-label="Volver arriba"
+    >
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+        <path d="M12 19V5m0 0l-7 7m7-7l7 7" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
+      </svg>
+    </button>
   );
 }
 
@@ -566,6 +792,7 @@ function Topbar() {
   const isCatalog = loc.pathname === "/catalogo";
 
   const { catFilters, setCatFilters, catOptions, resetCatFilters } = useFilters();
+  const activeCount = [catFilters.q, catFilters.brand, catFilters.segment, catFilters.color, catFilters.size].filter(Boolean).length;
 
   return (
     <div className="bar">
@@ -577,6 +804,7 @@ function Topbar() {
               onClick={() => setOpen(true)}
               aria-label="Abrir menú"
               title="Menú"
+              style={{ position: "relative" }}
             >
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
                 <path
@@ -586,6 +814,17 @@ function Topbar() {
                   strokeLinecap="round"
                 />
               </svg>
+              {isCatalog && activeCount > 0 && (
+                <span style={{
+                  position: "absolute", top: -2, right: -2,
+                  width: 18, height: 18, borderRadius: "50%",
+                  background: "var(--pink)", color: "#fff",
+                  fontSize: 10, fontWeight: 900, display: "grid", placeItems: "center",
+                  lineHeight: 1,
+                }}>
+                  {activeCount}
+                </span>
+              )}
             </button>
 
             <div className="brand">Zul Landeros Tenis</div>
@@ -739,7 +978,7 @@ function Catalogo() {
   const [errorMsg, setErrorMsg] = useState("");
   const [items, setItems] = useState([]);
 
-  const { catFilters, setCatOptions } = useFilters();
+  const { catFilters, setCatFilters, setCatOptions, resetCatFilters } = useFilters();
 
   useEffect(() => {
     let cancel = false;
@@ -843,42 +1082,92 @@ function Catalogo() {
           ) : null}
         </div>
 
-        <div className="muted" style={{ fontSize: 12 }}>
-          Abre el menú (☰) para buscar y filtrar.
-        </div>
+        {(() => {
+          const activeFilters = [];
+          if (catFilters.brand) activeFilters.push({ key: "brand", label: catFilters.brand });
+          if (catFilters.segment) activeFilters.push({ key: "segment", label: catFilters.segment });
+          if (catFilters.color) activeFilters.push({ key: "color", label: catFilters.color });
+          if (catFilters.size) activeFilters.push({ key: "size", label: `Talla ${catFilters.size}` });
+          if (catFilters.q) activeFilters.push({ key: "q", label: `"${catFilters.q}"` });
+
+          if (activeFilters.length === 0) {
+            return (
+              <div className="muted" style={{ fontSize: 12 }}>
+                Abre el menú (☰) para buscar y filtrar.
+              </div>
+            );
+          }
+          return (
+            <div className="filter-bar">
+              {activeFilters.map((f) => (
+                <span
+                  key={f.key}
+                  className="filter-chip"
+                  onClick={() => setCatFilters((prev) => ({ ...prev, [f.key]: "" }))}
+                >
+                  {f.label} <span className="x">&times;</span>
+                </span>
+              ))}
+              <span
+                className="filter-chip"
+                style={{ background: "rgba(0,0,0,.06)", color: "var(--muted)", borderColor: "rgba(0,0,0,.08)" }}
+                onClick={resetCatFilters}
+              >
+                Limpiar todo
+              </span>
+            </div>
+          );
+        })()}
 
         <div className="hr" />
 
-        {loading ? <div className="glass panel muted">Cargando…</div> : null}
+        {loading ? (
+          <div className="grid">
+            {Array.from({ length: 8 }).map((_, i) => (
+              <div key={i} className="card skeleton-card">
+                <div className="skeleton-img skeleton" />
+                <div style={{ padding: "10px 14px" }}>
+                  <div className="skeleton-text skeleton" />
+                  <div className="skeleton-text short skeleton" />
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : null}
         {errorMsg ? <div className="glass panel danger">Error: {errorMsg}</div> : null}
 
-        <div className="hr" />
+        {!loading && (
+          <div className="grid">
+            {filtered.map((p, i) => {
+              const cover = Array.isArray(p.images) ? p.images[0] : null;
+              const to = p.slug ? `/p/${p.slug}` : `/p/${p.id}`;
+              const sizes = parseSizes(p.sizes);
+              const seg = canonSegment(p.segment);
+              const col = primaryColor(p.color);
 
-        <div className="grid">
-          {filtered.map((p) => {
-            const cover = Array.isArray(p.images) ? p.images[0] : null;
-            const to = p.slug ? `/p/${p.slug}` : `/p/${p.id}`;
-
-            return (
-              <Link key={p.id} to={to} className="card">
-                <div className="imgBox">
-                  {cover ? (
-                    <img
-                      src={cover}
-                      alt={`${p.brand} ${p.model}`}
-                      loading="lazy"
-                      className="img"
-                    />
-                  ) : null}
-                </div>
-                <div className="meta">
-                  <div className="title">{p.model}</div>
-                  <div className="sub">{p.brand}</div>
-                </div>
-              </Link>
-            );
-          })}
-        </div>
+              return (
+                <Link key={p.id} to={to} className="card">
+                  <div className="imgBox">
+                    {cover ? (
+                      <LazyImage src={cover} alt={`${p.brand} ${p.model}`} />
+                    ) : null}
+                  </div>
+                  <div className="meta">
+                    <div className="title">{p.model}</div>
+                    <div className="sub">{p.brand}</div>
+                    {sizes.length > 0 && (
+                      <div className="sizes-row">
+                        {sizes.map((s) => (
+                          <span key={s} className="size-chip">{s}</span>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                </Link>
+              );
+            })}
+          </div>
+        )}
 
         {!loading && !errorMsg && filtered.length === 0 ? (
           <div className="glass panel muted" style={{ marginTop: 14 }}>
@@ -886,6 +1175,7 @@ function Catalogo() {
           </div>
         ) : null}
       </div>
+      <BackToTop />
     </Shell>
   );
 }
@@ -969,9 +1259,13 @@ function Product() {
       </Shell>
     );
 
+  const [toastMsg, setToastMsg] = useState("");
+
   const images = Array.isArray(p.images) ? p.images : [];
   const sizes = parseSizes(p.sizes);
   const wa = orderUrl({ brand: p.brand, model: p.model, size, link });
+  const seg = canonSegment(p.segment);
+  const col = primaryColor(p.color);
 
   const safeLen = Math.max(images.length, 1);
   const safeIndex = ((activeIndex % safeLen) + safeLen) % safeLen;
@@ -981,40 +1275,34 @@ function Product() {
     setModalOpen(true);
   }
 
+  function handleShare() {
+    navigator.clipboard.writeText(link).then(() => {
+      setToastMsg("Enlace copiado");
+      setTimeout(() => setToastMsg(""), 2000);
+    });
+  }
+
   return (
     <Shell>
-      <div className="glass panel fadeIn">
-        <div className="row" style={{ justifyContent: "space-between" }}>
-          <div>
-            <div style={{ fontSize: 22, fontWeight: 950 }}>{p.model}</div>
-            <div className="muted">{p.brand}</div>
-          </div>
-          {p.segment ? <div className="chip">{canonSegment(p.segment)}</div> : null}
-        </div>
-
-        <div className="hr" />
-
+      <div className="fadeIn" style={{ maxWidth: 980 }}>
+        {/* Imagen principal */}
         {images[0] ? (
           <div
-            style={{
-              borderRadius: 22,
-              overflow: "hidden",
-              border: "1px solid rgba(255,255,255,.78)",
-              cursor: "zoom-in",
-            }}
+            className="glass"
+            style={{ borderRadius: 22, overflow: "hidden", padding: 0, cursor: "zoom-in" }}
             onClick={() => openAt(0)}
             title="Click para ampliar"
           >
             <img
               src={images[0]}
               alt={`${p.brand} ${p.model}`}
-              style={{ width: "100%", height: "auto", display: "block" }}
+              style={{ width: "100%", height: "auto", display: "block", maxHeight: "70vh", objectFit: "contain", background: "#f8f8fc" }}
             />
           </div>
         ) : null}
 
         {images.length > 1 ? (
-          <div className="thumbs">
+          <div className="thumbs" style={{ justifyContent: "center", marginTop: 10 }}>
             {images.slice(0, 12).map((u, i) => (
               <div className="thumb" key={u} onClick={() => openAt(i)} title="Ampliar">
                 <img src={u} alt={`img ${i + 1}`} loading="lazy" />
@@ -1025,52 +1313,93 @@ function Product() {
 
         <div className="hr" />
 
-        <div style={{ fontWeight: 950, marginBottom: 8 }}>Selecciona tu talla</div>
-        <select className="field" value={size} onChange={(e) => setSize(e.target.value)}>
-          <option value="">Selecciona una talla</option>
-          {sizes.map((s) => (
-            <option key={s} value={s}>
-              {s}
-            </option>
-          ))}
-        </select>
+        {/* Info panel */}
+        <div className="glass panel">
+          <div>
+            <div style={{ fontSize: 24, fontWeight: 950, lineHeight: 1.2 }}>{p.model}</div>
+            <div className="muted" style={{ marginTop: 4, textTransform: "uppercase", letterSpacing: 0.5 }}>{p.brand}</div>
+          </div>
 
-        <div className="hr" />
+          <div className="hr" />
 
-        <a
-          className="btn btnP"
-          href={wa}
-          target="_blank"
-          rel="noreferrer"
-          style={{ justifyContent: "center", width: "100%" }}
-        >
-          Pedir por WhatsApp
-        </a>
+          <div style={{ fontWeight: 950, marginBottom: 8 }}>Selecciona tu talla</div>
+          {sizes.length > 0 ? (
+            <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
+              {sizes.map((s) => (
+                <button
+                  key={s}
+                  className={`size-btn ${size === s ? "active" : ""}`}
+                  onClick={() => setSize(s)}
+                >
+                  {s}
+                </button>
+              ))}
+            </div>
+          ) : (
+            <div className="muted" style={{ fontSize: 13 }}>Sin tallas registradas</div>
+          )}
+
+          <div className="hr" />
+
+          <div style={{ display: "flex", gap: 10 }}>
+            <a
+              className="btn btnP"
+              href={wa}
+              target="_blank"
+              rel="noreferrer"
+              style={{ justifyContent: "center", flex: 1 }}
+            >
+              Pedir por WhatsApp
+            </a>
+            <button className="share-btn" onClick={handleShare} title="Copiar enlace">
+              Compartir
+            </button>
+          </div>
+        </div>
       </div>
 
+      {/* Lightbox mejorado */}
       {modalOpen ? (
         <div className="modalOverlay" onClick={() => setModalOpen(false)}>
-          <div className="modal" onClick={(e) => e.stopPropagation()}>
+          <div className="modal" onClick={(e) => e.stopPropagation()} style={{ position: "relative" }}>
             <div className="modalTop">
-              <div className="chip">
-                {p.brand} · {p.model}
-              </div>
-              <div className="row">
-                <button className="btn" onClick={() => setActiveIndex((x) => x - 1)}>
-                  ←
-                </button>
-                <button className="btn" onClick={() => setActiveIndex((x) => x + 1)}>
-                  →
-                </button>
-                <button className="btn btnP" onClick={() => setModalOpen(false)}>
-                  Cerrar
-                </button>
-              </div>
+              <div className="chip">{p.brand} &middot; {p.model}</div>
+              <button className="btn btnP" onClick={() => setModalOpen(false)} style={{ padding: "8px 16px" }}>
+                Cerrar
+              </button>
             </div>
-            <img className="modalImg" src={images[safeIndex]} alt="Zoom" />
+            <div
+              style={{ position: "relative" }}
+              onTouchStart={(e) => { e.currentTarget._startX = e.touches[0].clientX; }}
+              onTouchEnd={(e) => {
+                const diff = e.changedTouches[0].clientX - (e.currentTarget._startX || 0);
+                if (Math.abs(diff) > 50) {
+                  setActiveIndex((x) => diff > 0 ? x - 1 : x + 1);
+                }
+              }}
+            >
+              {images.length > 1 && (
+                <>
+                  <button className="nav-arrow left" onClick={() => setActiveIndex((x) => x - 1)}>
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M15 19l-7-7 7-7" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
+                  </button>
+                  <button className="nav-arrow right" onClick={() => setActiveIndex((x) => x + 1)}>
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M9 5l7 7-7 7" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
+                  </button>
+                </>
+              )}
+              <img className="modalImg" src={images[safeIndex]} alt="Zoom" />
+            </div>
+            {images.length > 1 && (
+              <div style={{ textAlign: "center", padding: "8px 0 12px", fontSize: 12, fontWeight: 700, color: "rgba(255,255,255,.6)" }}>
+                {safeIndex + 1} / {images.length}
+              </div>
+            )}
           </div>
         </div>
       ) : null}
+
+      {toastMsg && <div className="toast">{toastMsg}</div>}
     </Shell>
   );
 }
@@ -1407,6 +1736,7 @@ function AdminHome({ session }) {
         <div className="hr" />
 
         <form onSubmit={save} style={{ display: "grid", gap: 10 }}>
+          <div className="admin-label">Información del producto</div>
           <div className="row">
             <input
               className="field"
@@ -1426,6 +1756,7 @@ function AdminHome({ session }) {
             />
           </div>
 
+          <div className="admin-label">Clasificación</div>
           <div className="row">
             <select
               className="field"
@@ -1456,6 +1787,7 @@ function AdminHome({ session }) {
             onChange={(e) => setField("sizes", e.target.value)}
           />
 
+          <div className="admin-label">Multimedia</div>
           <div className="row" style={{ justifyContent: "space-between" }}>
             <div className="muted" style={{ fontSize: 12 }}>
               Fotos
