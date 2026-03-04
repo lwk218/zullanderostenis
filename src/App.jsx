@@ -3,6 +3,7 @@ import {
   useMemo,
   useState,
   useCallback,
+  useRef,
   Component,
   createContext,
   useContext,
@@ -213,7 +214,7 @@ function css() {
   .size-chip{
     font-size:10px; font-weight:700; line-height:1;
     padding:2px 5px; border-radius:6px;
-    background:rgba(0,0,0,.06); color:var(--fg);
+    background:rgba(0,0,0,.06); color:var(--text);
   }
 
   .field{
@@ -1191,6 +1192,8 @@ function Product() {
   const [size, setSize] = useState("");
   const [modalOpen, setModalOpen] = useState(false);
   const [activeIndex, setActiveIndex] = useState(0);
+  const [toastMsg, setToastMsg] = useState("");
+  const touchStartX = useRef(0);
 
   const link = useMemo(
     () => `${window.location.origin}${window.location.pathname}#/p/${slugOrId}`,
@@ -1258,8 +1261,6 @@ function Product() {
         </div>
       </Shell>
     );
-
-  const [toastMsg, setToastMsg] = useState("");
 
   const images = Array.isArray(p.images) ? p.images : [];
   const sizes = parseSizes(p.sizes);
@@ -1370,9 +1371,9 @@ function Product() {
             </div>
             <div
               style={{ position: "relative" }}
-              onTouchStart={(e) => { e.currentTarget._startX = e.touches[0].clientX; }}
+              onTouchStart={(e) => { touchStartX.current = e.touches[0].clientX; }}
               onTouchEnd={(e) => {
-                const diff = e.changedTouches[0].clientX - (e.currentTarget._startX || 0);
+                const diff = e.changedTouches[0].clientX - touchStartX.current;
                 if (Math.abs(diff) > 50) {
                   setActiveIndex((x) => diff > 0 ? x - 1 : x + 1);
                 }
