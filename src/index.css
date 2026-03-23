@@ -818,9 +818,10 @@ textarea.field {
 
 /* =============================================
    Splash Intro
+   100% GPU — only transform + opacity
    ============================================= */
 
-.splash {
+.sp {
   position: fixed;
   inset: 0;
   z-index: 120;
@@ -830,76 +831,105 @@ textarea.field {
   overflow: hidden;
 }
 
-.splash-bg {
+.sp-bg {
   position: absolute;
   inset: 0;
-  background: linear-gradient(135deg, var(--pink), var(--pink-soft) 50%, #f8bbd0);
+  background: linear-gradient(160deg, #e91e63 0%, #f06292 40%, #f8bbd0 100%);
+  will-change: opacity;
+  transition: opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.splash-curtain {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  width: 51%;
-  will-change: transform;
-  background: linear-gradient(135deg, var(--pink), var(--pink-soft));
-}
-
-.splash-curtain-left {
-  left: 0;
-  animation: curtainL 0.7s cubic-bezier(0.4, 0, 0.2, 1) 0.7s forwards;
-}
-
-.splash-curtain-right {
-  right: 0;
-  animation: curtainR 0.7s cubic-bezier(0.4, 0, 0.2, 1) 0.7s forwards;
-}
-
-.splash-content {
+.sp-center {
   position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
+  gap: 14px;
+  will-change: transform, opacity;
+  opacity: 0;
+  transform: translate3d(0, 20px, 0) scale(0.97);
+  animation: spIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.08s forwards;
 }
 
-.splash-title {
+.sp-brand {
   font-weight: 900;
-  letter-spacing: -0.5px;
-  font-size: clamp(30px, 6vw, 64px);
+  font-size: clamp(28px, 7vw, 56px);
   color: #fff;
-  will-change: transform, opacity;
-  animation: txtIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) 0.05s both,
-    txtOut 0.35s ease-in 0.68s both;
   text-align: center;
-  padding: 0 16px;
+  letter-spacing: -0.5px;
+  line-height: 1;
+  padding: 0 20px;
 }
 
-.splash-line {
-  width: min(160px, 36vw);
-  height: 2px;
-  border-radius: 2px;
+.sp-dot-row {
+  display: flex;
+  gap: 8px;
+}
+
+.sp-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
   background: rgba(255, 255, 255, 0.5);
-  margin-top: 10px;
-  will-change: transform, opacity;
-  transform: scaleX(0);
-  animation: lineIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) 0.2s both,
-    lineOut 0.25s ease-in 0.68s both;
+  opacity: 0;
+  transform: scale(0);
 }
 
-.splash-sub {
-  font-size: clamp(10px, 1.8vw, 13px);
+.sp-dot:nth-child(1) { animation: spDot 0.4s cubic-bezier(0.16, 1, 0.3, 1) 0.25s forwards; }
+.sp-dot:nth-child(2) { animation: spDot 0.4s cubic-bezier(0.16, 1, 0.3, 1) 0.35s forwards; }
+.sp-dot:nth-child(3) { animation: spDot 0.4s cubic-bezier(0.16, 1, 0.3, 1) 0.45s forwards; }
+
+.sp-sub {
+  font-size: clamp(10px, 2vw, 13px);
   font-weight: 700;
-  color: rgba(255, 255, 255, 0.55);
+  color: rgba(255, 255, 255, 0.5);
   letter-spacing: 4px;
   text-transform: uppercase;
-  margin-top: 10px;
-  will-change: transform, opacity;
-  animation: txtIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) 0.18s both,
-    txtOut 0.3s ease-in 0.68s both;
+  opacity: 0;
+  transform: translate3d(0, 8px, 0);
+  animation: spIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) 0.2s forwards;
 }
 
-.splash-hide {
-  animation: splashOut 0.25s ease-out 1.45s forwards;
+/* Exit — triggered by .sp-out class */
+.sp-out .sp-center {
+  animation: spOut 0.45s cubic-bezier(0.4, 0, 1, 1) forwards;
+}
+
+.sp-out .sp-bg {
+  opacity: 0;
+  transition-delay: 0.15s;
+}
+
+.sp-out {
+  animation: spHide 0s linear 0.6s forwards;
+}
+
+@keyframes spIn {
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+}
+
+@keyframes spDot {
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes spOut {
+  to {
+    opacity: 0;
+    transform: translate3d(0, -16px, 0) scale(0.98);
+  }
+}
+
+@keyframes spHide {
+  to {
+    visibility: hidden;
+    pointer-events: none;
+  }
 }
 
 /* =============================================
@@ -1020,22 +1050,7 @@ textarea.field {
   to { transform: translateX(0); }
 }
 
-@keyframes curtainL { to { transform: translate3d(-102%, 0, 0); } }
-@keyframes curtainR { to { transform: translate3d(102%, 0, 0); } }
-
-@keyframes txtIn {
-  from { opacity: 0; transform: translate3d(0, 16px, 0) scale(0.95); }
-  to { opacity: 1; transform: translate3d(0, 0, 0) scale(1); }
-}
-
-@keyframes txtOut {
-  to { opacity: 0; transform: translate3d(0, -10px, 0) scale(0.97); }
-}
-
-@keyframes lineIn { to { transform: scaleX(1); opacity: 1; } }
-@keyframes lineOut { to { transform: scaleX(0); opacity: 0; } }
-
-@keyframes splashOut { to { opacity: 0; visibility: hidden; } }
+/* (old curtain keyframes removed — splash uses sp* keyframes now) */
 
 @keyframes shimmer {
   0% { background-position: 200% 0; }
